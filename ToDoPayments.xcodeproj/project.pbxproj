@@ -14,7 +14,6 @@
 		ABE9E1602CDBE5030069E894 /* Exceptions for "ToDoPayments" folder in "ToDoPayments" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"/Localized: Main.storyboard",
 				Info.plist,
 			);
 			target = ABE9E14A2CDBE5000069E894 /* ToDoPayments */;
