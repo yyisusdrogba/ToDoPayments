@@ -40,4 +40,18 @@ class HomeDataManager {
             },
         ]
     }
+    
+    func getCategoryForPicker () -> [String] {
+        return [
+            "Entertainment",
+            "Feeding",
+            "Transport",
+            "Dwelling",
+            "Health and wellness",
+            "Education and personal development",
+            "Technology and communication",
+            "Clothing and accessories",
+            "Finance and Insurance"
+        ]
+    }
 }

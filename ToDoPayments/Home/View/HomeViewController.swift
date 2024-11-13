@@ -103,7 +103,9 @@ class HomeViewController: UIViewController {
     }
     
     @objc func addPayment() {
-        
+        let cardViewController = CardViewController()
+        cardViewController.modalPresentationStyle = .pageSheet
+        present(cardViewController, animated: true)
     }
 }
 
