@@ -9,12 +9,15 @@ import UIKit
 
 class CardViewController: UIViewController {
     
+    let presenter = CardPresenter()
+    
     let imagePayment: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(systemName: "xbox.logo")
+        image.image = UIImage(systemName: "dollarsign")
         image.contentMode = .scaleAspectFit
-        image.tintColor = .black
+        image.tintColor = .white
         image.translatesAutoresizingMaskIntoConstraints = false
+        image.isUserInteractionEnabled = true
         return image
     }()
     
@@ -22,6 +25,10 @@ class CardViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Price"
+        textField.textColor = .black
+        textField.tag = 2
+        textField.backgroundColor = .white
+        textField.layer.cornerRadius = 10
         return textField
     }()
     
@@ -29,6 +36,10 @@ class CardViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Name of the payment"
+        textField.textColor = .black
+        textField.tag = 0
+        textField.backgroundColor = .white
+        textField.layer.cornerRadius = 10
         return textField
     }()
     
@@ -36,12 +47,15 @@ class CardViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Category:"
+        label.textColor = .white
+        
         return label
     }()
     
     let categoryPicker: UIPickerView = {
         let picker = UIPickerView()
         picker.translatesAutoresizingMaskIntoConstraints = false
+        picker.tintColor = .white
         return picker
     }()
     
@@ -49,6 +63,7 @@ class CardViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Date limit:"
+        label.textColor = .white
         return label
     }()
     
@@ -58,6 +73,7 @@ class CardViewController: UIViewController {
         datePicker.minimumDate = .now
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.preferredDatePickerStyle = .compact
+        datePicker.backgroundColor = UIColor(white: 0.6, alpha: 0.9)
         return datePicker
     }()
     
@@ -65,6 +81,7 @@ class CardViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Pago dividido entre mas personas:"
+        label.textColor = .white
         return label
     }()
     
@@ -80,6 +97,7 @@ class CardViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Entre cuantas personas se divide el pago:"
         label.isHidden = true
+        label.textColor = .white
         return label
     }()
     
@@ -88,14 +106,19 @@ class CardViewController: UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "2"
         textField.isHidden = true
+        textField.tag = 1
+        textField.textColor = .black
+        textField.backgroundColor = .white
+        textField.layer.cornerRadius = 2
         return textField
     }()
     
     let payForPerson: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Pago por persona: 400"
+        label.text = "Pago por persona:"
         label.isHidden = true
+        label.textColor = .white
         return label
     }()
     
@@ -104,8 +127,9 @@ class CardViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Save", for: .normal)
         button.setTitleColor(.black, for: .normal)
-        button.backgroundColor = .red
+        button.backgroundColor = .white
         button.addTarget(self, action: #selector(savePayment), for: .touchUpInside)
+        button.layer.cornerRadius = 4
         return button
     }()
     
@@ -135,18 +159,30 @@ class CardViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .black
+        print(textFieldName.tag)
+        print(textFieldPrice.tag)
         initComponents()
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-                view.addGestureRecognizer(tapGesture)
     }
     
     @objc func dismissKeyboard() {
             view.endEditing(true)
         }
     
+    @objc func showImageCollect () {
+        let imageCollectionViewController = ImageCollectionViewController()
+        imageCollectionViewController.modalPresentationStyle = .fullScreen
+        imageCollectionViewController.modalTransitionStyle = .crossDissolve
+        imageCollectionViewController.view.backgroundColor = UIColor(white: 0, alpha: 0.6)
+        imageCollectionViewController.imageSelectionProtocol = self
+        present(imageCollectionViewController, animated: true)
+    }
+    
     @objc func savePayment() {
-        
+        print(dateLimit.date.formatted(.dateTime.day().month().year()))
+        if toggleForPerson.isOn {
+             
+        }
     }
     
     @objc func switchToggled(_ sender: UISwitch) {
@@ -163,6 +199,12 @@ class CardViewController: UIViewController {
     
     func initComponents () {
         
+        //TAP EVENTS
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+        let tapGestureImage = UITapGestureRecognizer(target: self, action: #selector(showImageCollect))
+        imagePayment.addGestureRecognizer(tapGestureImage)
+        
         //ADD DELEGATES
         categoryPicker.delegate = self
         categoryPicker.dataSource = self
@@ -173,7 +215,7 @@ class CardViewController: UIViewController {
         
         
         
-        //ADD CONSTRINS IN THE COMPONENTS
+        //ADD CONSTRAINS IN THE COMPONENTS
         view.addSubview(imagePayment)
         view.addSubview(textFieldPrice)
         view.addSubview(textFieldName)
@@ -205,15 +247,27 @@ class CardViewController: UIViewController {
             imagePayment.heightAnchor.constraint(equalToConstant: 100),
             imagePayment.widthAnchor.constraint(equalToConstant: 100),
             
-            textFieldPrice.topAnchor.constraint(equalTo: imagePayment.bottomAnchor,constant: 26),
-            textFieldPrice.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
-            textFieldPrice.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
-            
-            textFieldName.topAnchor.constraint(equalTo: textFieldPrice.bottomAnchor, constant: 10),
+            textFieldName.topAnchor.constraint(equalTo: imagePayment.bottomAnchor, constant: 10),
+            textFieldName.heightAnchor.constraint(equalToConstant: 30),
             textFieldName.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             textFieldName.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
             
-            labelCategory.topAnchor.constraint(equalTo: textFieldName.bottomAnchor,constant: 12),
+            textFieldPrice.topAnchor.constraint(equalTo: textFieldName.bottomAnchor,constant: 26),
+            textFieldPrice.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+            textFieldPrice.heightAnchor.constraint(equalToConstant: 30),
+            textFieldPrice.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+            
+            secondHorizontalStackView.topAnchor.constraint(equalTo: textFieldPrice.bottomAnchor, constant: 14),
+            secondHorizontalStackView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+            secondHorizontalStackView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+            secondHorizontalStackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+            
+            thirdHorizontalStackView.topAnchor.constraint(equalTo: secondHorizontalStackView.bottomAnchor, constant: 14),
+            thirdHorizontalStackView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+            thirdHorizontalStackView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+            thirdHorizontalStackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.86),
+            
+            labelCategory.topAnchor.constraint(equalTo: thirdHorizontalStackView.bottomAnchor,constant: 12),
             labelCategory.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             labelCategory.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
             
@@ -226,18 +280,9 @@ class CardViewController: UIViewController {
             firstHorizontalStackView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
             firstHorizontalStackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.4),
             
-            secondHorizontalStackView.topAnchor.constraint(equalTo: firstHorizontalStackView.bottomAnchor, constant: 14),
-            secondHorizontalStackView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
-            secondHorizontalStackView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
-            secondHorizontalStackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
-            
-            thirdHorizontalStackView.topAnchor.constraint(equalTo: secondHorizontalStackView.bottomAnchor, constant: 14),
-            thirdHorizontalStackView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
-            thirdHorizontalStackView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
-            thirdHorizontalStackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.86),
-            
-            payForPerson.topAnchor.constraint(equalTo: thirdHorizontalStackView.bottomAnchor, constant: 14),
+            payForPerson.topAnchor.constraint(equalTo: firstHorizontalStackView.bottomAnchor, constant: 14),
             payForPerson.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+            payForPerson.heightAnchor.constraint(equalToConstant: 30),
             payForPerson.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
 
             buttonSave.topAnchor.constraint(equalTo: payForPerson.bottomAnchor, constant: 14),
@@ -266,19 +311,34 @@ extension CardViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         print(HomeDataManager().getCategoryForPicker()[row])
     }
     
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        let text = HomeDataManager().getCategoryForPicker()[row]
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.white
+        ]
+        return NSAttributedString(string: text, attributes: attributes)
+    }
+    
 }
 
 extension CardViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if textField == numberOfPersonsWritten || textField == textFieldPrice {
-            let allowedCharacters = CharacterSet.decimalDigits
-            let characterSet = CharacterSet(charactersIn: string)
-            return allowedCharacters.isSuperset(of: characterSet)
-        }
-        return true
+        return presenter.keyboardSettings(text: textField.text ?? "", tag: textField.tag, range: range, string: string)
     }
     
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        payForPerson.text = "Pago por persona:\(presenter.operationOfPaymentDivided(price: textFieldPrice.text ?? "0", numberOfPersons: textField.text ?? "0"))"
+    }
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.keyboardType = presenter.typeOfKeyboard(tag: textField.tag)
+    }
     
+}
+
+extension CardViewController: ImageSelectionProtocol {
+    func imageSelected(image: UIImage) {
+        imagePayment.image = image
+    }
 }
