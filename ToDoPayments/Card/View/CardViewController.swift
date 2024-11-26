@@ -9,6 +9,8 @@ import UIKit
 
 class CardViewController: UIViewController {
     
+    var category = ""
+    var image = ""
     let presenter = CardPresenter()
     
     let imagePayment: UIImageView = {
@@ -116,7 +118,7 @@ class CardViewController: UIViewController {
     let payForPerson: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Pago por persona:"
+        label.text = ""
         label.isHidden = true
         label.textColor = .white
         return label
@@ -160,8 +162,6 @@ class CardViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
-        print(textFieldName.tag)
-        print(textFieldPrice.tag)
         initComponents()
     }
     
@@ -179,10 +179,20 @@ class CardViewController: UIViewController {
     }
     
     @objc func savePayment() {
-        print(dateLimit.date.formatted(.dateTime.day().month().year()))
-        if toggleForPerson.isOn {
-             
+        print(textFieldName.text!)
+        print(textFieldPrice.text!)
+        print(category)
+        print(image)
+        if textFieldName.text != nil && textFieldPrice.text != "" && category != "" && image != ""{
+            if toggleForPerson.isOn {
+                presenter.obtainPayment(model: ModelPaymentCard(image: image, name: textFieldName.text!, category: category, price: textFieldPrice.text!, dateLimit:dateLimit.date.formatted(.dateTime.day().month().year()) , paymentForPerson: payForPerson.text))
+                self.dismiss(animated: true)
+            } else {
+                presenter.obtainPayment(model: ModelPaymentCard(image: image, name: textFieldName.text!, category: category, price: textFieldPrice.text!, dateLimit:dateLimit.date.formatted(.dateTime.day().month().year()) , paymentForPerson: nil))
+                self.dismiss(animated: true)
+            }
         }
+        print(CoreDataPayment().cards)
     }
     
     @objc func switchToggled(_ sender: UISwitch) {
@@ -308,7 +318,7 @@ extension CardViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        print(HomeDataManager().getCategoryForPicker()[row])
+        category = HomeDataManager().getCategoryForPicker()[row]
     }
     
     func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
@@ -324,21 +334,43 @@ extension CardViewController: UIPickerViewDelegate, UIPickerViewDataSource {
 extension CardViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        return presenter.keyboardSettings(text: textField.text ?? "", tag: textField.tag, range: range, string: string)
+        guard let textUnwrapped = textField.text else { return false }
+        guard let rangeConvert = Range(range, in: textUnwrapped) else {return false}
+        let replacingText = textUnwrapped.replacingCharacters(in: rangeConvert, with: string)
+        switch textField.tag {
+        case 0:
+            return replacingText.count < 30
+        case 1:
+            guard let floatText = Float(replacingText) else {return false}
+            return floatText >= 1 && floatText <= 99
+        case 2:
+            guard let floatText = Float(replacingText) else {return false}
+            return floatText >= 1 && floatText <= 99999
+        default :
+            return true
+        }
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        payForPerson.text = "Pago por persona:\(presenter.operationOfPaymentDivided(price: textFieldPrice.text ?? "0", numberOfPersons: textField.text ?? "0"))"
+        payForPerson.text = "\(presenter.operationOfPaymentDivided(price: textFieldPrice.text ?? "0", numberOfPersons: textField.text ?? "0"))"
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        textField.keyboardType = presenter.typeOfKeyboard(tag: textField.tag)
+        switch textField.tag {
+        case 1:
+            textField.keyboardType = .numberPad
+        case 2:
+            textField.keyboardType = .numberPad
+        default:
+            textField.keyboardType = .default
+        }
     }
     
 }
 
 extension CardViewController: ImageSelectionProtocol {
-    func imageSelected(image: UIImage) {
-        imagePayment.image = image
+    func imageSelected(image: String) {
+        self.image = image
+        imagePayment.image = UIImage(systemName: image)
     }
 }

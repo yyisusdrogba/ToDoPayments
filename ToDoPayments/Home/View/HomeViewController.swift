@@ -10,9 +10,9 @@ import UIKit
 class HomeViewController: UIViewController {
     
     let proubeArray: [ModelPaymentCard] = [
-        ModelPaymentCard(image: "xbox.logo", name: "Game pass", category: "Entertainment", price: "179", paymentLimit: "12/12/2000", paymentForPerson: nil),
-        ModelPaymentCard(image: "playstation.logo", name: "12345678912345678912345678912", category: "technology and comunication", price: "20,000", paymentLimit: "12/12/2000", paymentForPerson: nil),
-        ModelPaymentCard(image: "carrot", name: "pago de el pastel", category: "feeding", price: "300", paymentLimit: "12/23/2000", paymentForPerson: nil)
+        ModelPaymentCard(image: "xbox.logo", name: "Game pass", category: "Entertainment", price: "179", dateLimit: "12/12/2000", paymentForPerson: nil),
+        ModelPaymentCard(image: "playstation.logo", name: "12345678912345678912345678912", category: "technology and comunication", price: "20,000", dateLimit: "12/12/2000", paymentForPerson: nil),
+        ModelPaymentCard(image: "carrot", name: "pago de el pastel", category: "feeding", price: "300", dateLimit: "12/23/2000", paymentForPerson: nil)
     ]
     
     let menuButton: UIButton = {

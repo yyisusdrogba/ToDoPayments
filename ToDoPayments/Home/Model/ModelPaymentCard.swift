@@ -12,6 +12,6 @@ struct ModelPaymentCard {
     let name: String
     let category: String
     let price: String
-    let paymentLimit: String
+    let dateLimit: String
     let paymentForPerson: String?
 }

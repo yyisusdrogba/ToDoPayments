@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ImageSelectionProtocol {
-    func imageSelected (image: UIImage)
+    func imageSelected (image: String)
 }
 
 class ImageCollectionViewController: UIViewController {
@@ -92,8 +92,9 @@ extension ImageCollectionViewController: UICollectionViewDelegate, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let itemSelected =  UIImage(systemName: SymbolsOrImagesCard.collectionSymbols[indexPath.item])!
-        imageSelectionProtocol?.imageSelected(image: itemSelected)
+//        let itemSelected =  UIImage(systemName: SymbolsOrImagesCard.collectionSymbols[indexPath.item])!
+//        print(SymbolsOrImagesCard.collectionSymbols[indexPath.item])
+        imageSelectionProtocol?.imageSelected(image: SymbolsOrImagesCard.collectionSymbols[indexPath.item])
         dismiss(animated: true)
     }
 }

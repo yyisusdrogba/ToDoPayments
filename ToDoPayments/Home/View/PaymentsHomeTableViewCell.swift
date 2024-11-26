@@ -132,7 +132,7 @@ class PaymentsHomeTableViewCell: UITableViewCell {
         image.image = UIImage(systemName: model.image)
         name.text = "Pay name: \(model.name)"
         price.text = "Amount: \(model.price)"
-        paymentLimit.text = "Payment limit: \(model.paymentLimit)"
+        paymentLimit.text = "Payment limit: \(model.dateLimit)"
         category.text = "Category: \(model.category)"
     }
     
