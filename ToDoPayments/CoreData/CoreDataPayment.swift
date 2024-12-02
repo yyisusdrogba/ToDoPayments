@@ -10,18 +10,18 @@ import UIKit
 
 class CoreDataPayment {
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var cards: [Payment] = []
+    let context = CoreDataManager.shared.viewContext
     
-    func getAllCards() {
+    func getAllCards(completionHandler: @escaping ([Payment]) -> Void) {
         do {
-            cards = try context.fetch(Payment.fetchRequest())
+            completionHandler(try context.fetch(Payment.fetchRequest()))
         } catch {
             //error
+            completionHandler([])
         }
     }
     
-    func createCard(model: ModelPaymentCard) {
+    func createCard(model: ModelPaymentCard, completionHandler: @escaping(Bool) -> Void) {
         let newCard = Payment(context: context)
         newCard.image = model.image
         newCard.name = model.name
@@ -31,6 +31,7 @@ class CoreDataPayment {
         
         do {
             try context.save()
+            completionHandler(true)
         } catch {
             //error
         }

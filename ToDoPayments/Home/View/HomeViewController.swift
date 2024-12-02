@@ -7,13 +7,15 @@
 
 import UIKit
 
+protocol HomeViewProtocol: AnyObject {
+    func paymentsCharged()
+}
+
 class HomeViewController: UIViewController {
     
-    let proubeArray: [ModelPaymentCard] = [
-        ModelPaymentCard(image: "xbox.logo", name: "Game pass", category: "Entertainment", price: "179", dateLimit: "12/12/2000", paymentForPerson: nil),
-        ModelPaymentCard(image: "playstation.logo", name: "12345678912345678912345678912", category: "technology and comunication", price: "20,000", dateLimit: "12/12/2000", paymentForPerson: nil),
-        ModelPaymentCard(image: "carrot", name: "pago de el pastel", category: "feeding", price: "300", dateLimit: "12/23/2000", paymentForPerson: nil)
-    ]
+    var presenter: HomePresenterProtocol?
+    let cardViewController = CardViewController()
+
     
     let menuButton: UIButton = {
         let menuButton = UIButton(type: .system)
@@ -65,6 +67,9 @@ class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         initComponents()
+        presenter = HomePresenter(view: self)
+        presenter?.getPayments()
+        tableView.reloadData()
     }
     
     private func initComponents() {
@@ -103,8 +108,7 @@ class HomeViewController: UIViewController {
     }
     
     @objc func addPayment() {
-        let cardViewController = CardViewController()
-        cardViewController.modalPresentationStyle = .pageSheet
+        cardViewController.modalPresentationStyle = .fullScreen
         present(cardViewController, animated: true)
     }
 }
@@ -112,17 +116,15 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return proubeArray.count
+        return (presenter?.payments.count)!
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PaymentsHomeTableViewCell") as! PaymentsHomeTableViewCell
-        let model = proubeArray[indexPath.row]
-        cell.configure(model: model)
+        let model = presenter?.payments[indexPath.row]
+        cell.configure(model: model!)
         return cell
     }
-   
-    
 }
 
 extension HomeViewController: UITableViewDelegate {
@@ -132,7 +134,10 @@ extension HomeViewController: UITableViewDelegate {
     }
 }
 
-
-struct proubeTableCell {
-    let name: String
+extension HomeViewController: HomeViewProtocol {
+    func paymentsCharged() {
+        print("load data")
+    }
 }
+
+

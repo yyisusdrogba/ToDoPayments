@@ -7,11 +7,16 @@
 
 import UIKit
 
+protocol CardViewProtocol{
+    func succes()
+    func error()
+}
+
 class CardViewController: UIViewController {
     
     var category = ""
     var image = ""
-    let presenter = CardPresenter()
+    var presenter: CardPresenterProtocol?
     
     let imagePayment: UIImageView = {
         let image = UIImageView()
@@ -158,16 +163,18 @@ class CardViewController: UIViewController {
         stackView.distribution = .fillProportionally
         return stackView
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
+        presenter = CardPresenter(cardViewProtocol: self)
         initComponents()
     }
     
     @objc func dismissKeyboard() {
-            view.endEditing(true)
-        }
+        view.endEditing(true)
+        presenter = CardPresenter(cardViewProtocol: self)
+    }
     
     @objc func showImageCollect () {
         let imageCollectionViewController = ImageCollectionViewController()
@@ -179,20 +186,15 @@ class CardViewController: UIViewController {
     }
     
     @objc func savePayment() {
-        print(textFieldName.text!)
-        print(textFieldPrice.text!)
-        print(category)
-        print(image)
+        guard let textFieldNameFull = textFieldName.text else {return}
         if textFieldName.text != nil && textFieldPrice.text != "" && category != "" && image != ""{
             if toggleForPerson.isOn {
-                presenter.obtainPayment(model: ModelPaymentCard(image: image, name: textFieldName.text!, category: category, price: textFieldPrice.text!, dateLimit:dateLimit.date.formatted(.dateTime.day().month().year()) , paymentForPerson: payForPerson.text))
-                self.dismiss(animated: true)
+                presenter?.createPayment(model: ModelPaymentCard(image: image, name: textFieldName.text!, category: category, price: textFieldPrice.text!, dateLimit:dateLimit.date.formatted(.dateTime.day().month().year()) , paymentForPerson: payForPerson.text))
             } else {
-                presenter.obtainPayment(model: ModelPaymentCard(image: image, name: textFieldName.text!, category: category, price: textFieldPrice.text!, dateLimit:dateLimit.date.formatted(.dateTime.day().month().year()) , paymentForPerson: nil))
+                presenter?.createPayment(model: ModelPaymentCard(image: image, name: textFieldName.text!, category: category, price: textFieldPrice.text!, dateLimit:dateLimit.date.formatted(.dateTime.day().month().year()) , paymentForPerson: nil))
                 self.dismiss(animated: true)
             }
         }
-        print(CoreDataPayment().cards)
     }
     
     @objc func switchToggled(_ sender: UISwitch) {
@@ -284,7 +286,7 @@ class CardViewController: UIViewController {
             categoryPicker.topAnchor.constraint(equalTo: labelCategory.bottomAnchor),
             categoryPicker.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             categoryPicker.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
-        
+            
             firstHorizontalStackView.topAnchor.constraint(equalTo: categoryPicker.bottomAnchor),
             firstHorizontalStackView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             firstHorizontalStackView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
@@ -294,7 +296,7 @@ class CardViewController: UIViewController {
             payForPerson.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             payForPerson.heightAnchor.constraint(equalToConstant: 30),
             payForPerson.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
-
+            
             buttonSave.topAnchor.constraint(equalTo: payForPerson.bottomAnchor, constant: 14),
             buttonSave.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             buttonSave.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
@@ -352,7 +354,7 @@ extension CardViewController: UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        payForPerson.text = "\(presenter.operationOfPaymentDivided(price: textFieldPrice.text ?? "0", numberOfPersons: textField.text ?? "0"))"
+        payForPerson.text = "\(presenter?.operationOfPaymentDivided(price: textFieldPrice.text ?? "0", numberOfPersons: textField.text ?? "0"))"
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -372,5 +374,15 @@ extension CardViewController: ImageSelectionProtocol {
     func imageSelected(image: String) {
         self.image = image
         imagePayment.image = UIImage(systemName: image)
+    }
+}
+
+extension CardViewController: CardViewProtocol {
+    func succes() {
+        print("El pago se creo con exito")
+    }
+    
+    func error() {
+        print("El pago no fue creado con exito")
     }
 }

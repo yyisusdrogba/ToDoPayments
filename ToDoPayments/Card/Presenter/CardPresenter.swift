@@ -8,10 +8,23 @@
 import Foundation
 import UIKit
 
-class CardPresenter {
-    
-    let coreDataPayment: CoreDataPayment = CoreDataPayment()
+protocol CardPresenterProtocol {
+    func operationOfPaymentDivided(price: String, numberOfPersons: String) -> String
+    func createPayment(model: ModelPaymentCard)
+}
 
+
+class CardPresenter: CardPresenterProtocol{
+    
+    var coreDataPayment: CoreDataPayment?
+    var cardViewProtocol: CardViewProtocol?
+    
+    
+    init(coreDataPayment: CoreDataPayment? = CoreDataPayment(), cardViewProtocol: CardViewProtocol?) {
+        self.coreDataPayment = coreDataPayment
+        self.cardViewProtocol = cardViewProtocol
+    }
+    
     func operationOfPaymentDivided(price: String, numberOfPersons: String) -> String {
         
         guard let price = Float(price), let numberOfPersons = Float(numberOfPersons) else { return "0" }
@@ -20,8 +33,16 @@ class CardPresenter {
         
     }
     
-    func obtainPayment(model: ModelPaymentCard) {
-        coreDataPayment.createCard(model: model)
+    func createPayment(model: ModelPaymentCard) {
+        coreDataPayment?.createCard(model: model, completionHandler: { state in
+            switch state {
+            case true:
+                self.cardViewProtocol?.succes()
+            default:
+                self.cardViewProtocol?.error()
+            }
+        })
     }
+    
 }
 

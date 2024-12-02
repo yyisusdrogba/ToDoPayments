@@ -128,12 +128,12 @@ class PaymentsHomeTableViewCell: UITableViewCell {
         ])
     }
     
-    func configure(model: ModelPaymentCard) {
-        image.image = UIImage(systemName: model.image)
-        name.text = "Pay name: \(model.name)"
-        price.text = "Amount: \(model.price)"
-        paymentLimit.text = "Payment limit: \(model.dateLimit)"
-        category.text = "Category: \(model.category)"
+    func configure(model: Payment) {
+        image.image = UIImage(systemName: model.image!)
+        name.text = "Pay name: \(model.name!)"
+        price.text = "Amount: \(model.price!)"
+        paymentLimit.text = "Payment limit: \(model.date!)"
+        category.text = "Category: \(model.category!)"
     }
     
 }
