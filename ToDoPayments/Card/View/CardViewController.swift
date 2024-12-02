@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol RefresDataProtocol: AnyObject {
+    func reloadPayments()
+}
+
 protocol CardViewProtocol{
     func succes()
     func error()
@@ -17,6 +21,7 @@ class CardViewController: UIViewController {
     var category = ""
     var image = ""
     var presenter: CardPresenterProtocol?
+    var refresDataProtocol: RefresDataProtocol?
     
     let imagePayment: UIImageView = {
         let image = UIImageView()
@@ -193,6 +198,7 @@ class CardViewController: UIViewController {
             } else {
                 presenter?.createPayment(model: ModelPaymentCard(image: image, name: textFieldName.text!, category: category, price: textFieldPrice.text!, dateLimit:dateLimit.date.formatted(.dateTime.day().month().year()) , paymentForPerson: nil))
                 self.dismiss(animated: true)
+                refresDataProtocol?.reloadPayments()
             }
         }
     }

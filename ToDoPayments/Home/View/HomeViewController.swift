@@ -67,6 +67,7 @@ class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         initComponents()
+        cardViewController.refresDataProtocol = self
         presenter = HomePresenter(view: self)
         presenter?.getPayments()
         tableView.reloadData()
@@ -137,6 +138,15 @@ extension HomeViewController: UITableViewDelegate {
 extension HomeViewController: HomeViewProtocol {
     func paymentsCharged() {
         print("load data")
+    }
+}
+
+extension HomeViewController: RefresDataProtocol {
+    func reloadPayments() {
+        DispatchQueue.main.async {
+            self.presenter?.getPayments()
+            self.tableView.reloadData()
+        }
     }
 }
 
