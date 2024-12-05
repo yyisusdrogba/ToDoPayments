@@ -16,6 +16,7 @@ class TabBarViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configurateTabBar()
+        view.backgroundColor = .black
     }
 }
 
@@ -28,6 +29,9 @@ extension TabBarViewController: UITabBarControllerDelegate {
         recordViewController.title = "Record"
         graphViewController.tabBarItem.image = UIImage(systemName: "dollarsign.gauge.chart.lefthalf.righthalf")
         graphViewController.title = "Graph"
+        
+        tabBar.tintColor = .white
+        tabBar.backgroundColor = .black
         
         setViewControllers([UINavigationController(rootViewController: homeViewController),UINavigationController(rootViewController: recordViewController), UINavigationController(rootViewController: graphViewController)], animated: true)
     }

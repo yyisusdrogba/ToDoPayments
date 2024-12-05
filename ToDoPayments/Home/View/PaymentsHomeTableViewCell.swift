@@ -13,13 +13,13 @@ class PaymentsHomeTableViewCell: UITableViewCell {
         let image = UIImageView()
         image.contentMode = .scaleAspectFit
         image.translatesAutoresizingMaskIntoConstraints = false
-        image.tintColor = .black
+        image.tintColor = .white
         return image
     }()
     
     let name: UILabel = {
         let text = UILabel()
-        text.textColor = .red
+        text.textColor = .white
         text.translatesAutoresizingMaskIntoConstraints = false
         text.numberOfLines = 3
         text.font = .systemFont(ofSize: 16)
@@ -30,6 +30,7 @@ class PaymentsHomeTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16)
+        label.textColor = .white
         return label
     }()
     
@@ -37,6 +38,7 @@ class PaymentsHomeTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16)
+        label.textColor = .white
         label.numberOfLines = 2
         return label
     }()
@@ -46,6 +48,7 @@ class PaymentsHomeTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16)
         label.numberOfLines = 3
+        label.textColor = .white
         return label
     }()
     
@@ -56,6 +59,7 @@ class PaymentsHomeTableViewCell: UITableViewCell {
         stack.distribution = .fillProportionally
         stack.alignment = .leading
         stack.spacing = 10
+        stack.backgroundColor = .black
         return stack
     }()
     
@@ -64,6 +68,7 @@ class PaymentsHomeTableViewCell: UITableViewCell {
         stack.axis = .vertical
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.spacing = 6
+        stack.backgroundColor = .black
         return stack
     }()
     
@@ -72,6 +77,7 @@ class PaymentsHomeTableViewCell: UITableViewCell {
         stack.axis = .vertical
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.distribution = .fillEqually
+        stack.backgroundColor = .black
         return stack
     }()
     
@@ -80,6 +86,7 @@ class PaymentsHomeTableViewCell: UITableViewCell {
         stack.axis = .vertical
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.distribution = .fillEqually
+        stack.backgroundColor = .black
         return stack
     }()
     

@@ -22,6 +22,7 @@ extension Payment {
     @NSManaged public var category: String?
     @NSManaged public var image: String?
     @NSManaged public var payForPerson: String?
+    @NSManaged public var isPayed: Bool
 
 }
 

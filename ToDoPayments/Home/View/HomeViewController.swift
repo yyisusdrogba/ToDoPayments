@@ -27,7 +27,7 @@ class HomeViewController: UIViewController {
         let menu = UIMenu(image: UIImage(systemName: ""), children: HomeDataManager().getActionsForButton())
         menuButton.menu = menu
         menuButton.showsMenuAsPrimaryAction = true
-        menuButton.tintColor = .black
+        menuButton.tintColor = .white
         return menuButton
     }()
     
@@ -36,7 +36,7 @@ class HomeViewController: UIViewController {
         button.addTarget(self, action: #selector(addPayment), for: .touchUpInside)
         button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.tintColor = .black
+        button.tintColor = .white
         return button
     }()
     
@@ -52,7 +52,7 @@ class HomeViewController: UIViewController {
         let horizontalStack = UIStackView()
         horizontalStack.translatesAutoresizingMaskIntoConstraints = false
         horizontalStack.axis = .horizontal
-        horizontalStack.backgroundColor = .brown
+        horizontalStack.backgroundColor = .black
         horizontalStack.distribution = .fillEqually
         return horizontalStack
     }()
@@ -62,6 +62,8 @@ class HomeViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .green
         tableView.register(PaymentsHomeTableViewCell.self, forCellReuseIdentifier: "PaymentsHomeTableViewCell")
+        tableView.separatorStyle = .singleLine
+        tableView.separatorColor = .white
         return tableView
     }()
 
@@ -77,6 +79,7 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.backgroundColor = .black
        
         view.addSubview(verticalStack)
         verticalStack.addArrangedSubview(horizontalStack)
@@ -144,7 +147,7 @@ extension HomeViewController: UITableViewDelegate {
             completionHandler(true)
             
         }
-        delete.backgroundColor = .gray
+        delete.backgroundColor = .red
         paid.backgroundColor = .gray
         let configuration = UISwipeActionsConfiguration(actions: [delete,paid])
         return configuration
