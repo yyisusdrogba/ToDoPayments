@@ -10,6 +10,7 @@ import Foundation
 protocol HomePresenterProtocol {
     func getPayments()
     var payments: [Payment] {get}
+    func deletePayment(number: Int)
 }
 
 class HomePresenter: HomePresenterProtocol{
@@ -26,9 +27,20 @@ class HomePresenter: HomePresenterProtocol{
         coreDataPayment?.getAllCards(completionHandler: { payments in
             self.payments = payments
             self.view?.paymentsCharged()
-            for pagos in payments {
-                print(pagos.name)
+        })
+    }
+    
+    func deletePayment(number: Int){
+        let card = payments[number]
+        coreDataPayment?.deleteCard(card: card, completionHandler: { status in
+            switch status {
+            case true:
+                self.view?.paymentEliminated()
+                print("the payment is deleted")
+            default:
+                print("Error deleting payment")
             }
         })
     }
+    
 }

@@ -9,13 +9,13 @@ import UIKit
 
 protocol HomeViewProtocol: AnyObject {
     func paymentsCharged()
+    func paymentEliminated()
 }
 
 class HomeViewController: UIViewController {
     
     var presenter: HomePresenterProtocol?
     let cardViewController = CardViewController()
-
     
     let menuButton: UIButton = {
         let menuButton = UIButton(type: .system)
@@ -133,9 +133,32 @@ extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 120
     }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let delete = UIContextualAction(style: .normal, title: "Delete") { action, view, completionHandler in
+            completionHandler(true)
+            self.presenter?.deletePayment(number: indexPath.row)
+        }
+        let paid = UIContextualAction(style: .normal, title: "Paid") { action, view, completionHandler in
+            completionHandler(true)
+            
+        }
+        delete.backgroundColor = .gray
+        paid.backgroundColor = .gray
+        let configuration = UISwipeActionsConfiguration(actions: [delete,paid])
+        return configuration
+    }
 }
 
 extension HomeViewController: HomeViewProtocol {
+    func paymentEliminated() {
+        DispatchQueue.main.async {
+            self.presenter?.getPayments()
+            self.tableView.reloadData()
+        }
+    }
+    
     func paymentsCharged() {
         print("load data")
     }

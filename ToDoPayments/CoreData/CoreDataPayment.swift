@@ -37,13 +37,14 @@ class CoreDataPayment {
         }
     }
     
-    func deleteCard(card: Payment) {
+    func deleteCard(card: Payment, completionHandler: @escaping (Bool) -> Void) {
         context.delete(card)
-        
         do {
             try context.save()
+            completionHandler(true)
         } catch {
             //error
+            completionHandler(false)
         }
     }
     
